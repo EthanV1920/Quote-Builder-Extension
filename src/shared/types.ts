@@ -1,4 +1,5 @@
 export const FIELD_KEYS = [
+  "source",
   "vendor",
   "title",
   "price",
@@ -32,8 +33,11 @@ export type AppConfig = {
   destinations: DestinationConfig[];
 };
 
+export type ProductSource = "B&H" | "Amazon";
+
 export type ScrapedProduct = {
-  vendor: "B&H";
+  source: ProductSource;
+  vendor: ProductSource;
   title: string;
   price: number;
   url: string;
@@ -46,7 +50,8 @@ export type SaveQuoteRequest = {
     mapping: HeaderMapping;
   };
   item: {
-    vendor: "B&H";
+    source: ProductSource;
+    vendor: ProductSource;
     title: string;
     price: number;
     url: string;

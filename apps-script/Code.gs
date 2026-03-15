@@ -151,6 +151,10 @@ function validatePayload(payload) {
     errors.push("Missing vendor");
   }
 
+  if (!payload.item.source) {
+    errors.push("Missing source");
+  }
+
   if (!payload.item.timestamp || isNaN(new Date(payload.item.timestamp).getTime())) {
     errors.push("Invalid timestamp");
   }
@@ -272,6 +276,7 @@ function summarizePayload(payload) {
           })
         : [],
     title: payload && payload.item ? payload.item.title : "",
+    source: payload && payload.item ? payload.item.source : "",
     price: payload && payload.item ? payload.item.price : "",
     url: payload && payload.item ? payload.item.url : "",
     quantity: payload && payload.item ? payload.item.quantity : "",

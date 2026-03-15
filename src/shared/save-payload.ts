@@ -14,6 +14,7 @@ export function buildSaveQuoteRequest(args: {
       mapping: getActiveHeaderMapping(args.destination.mapping)
     },
     item: {
+      source: args.product.source,
       vendor: args.product.vendor,
       title: args.product.title,
       price: args.product.price,

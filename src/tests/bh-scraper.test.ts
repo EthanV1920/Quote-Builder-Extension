@@ -20,6 +20,7 @@ describe("B&H scraper", () => {
     );
 
     expect(scrapeBhProductDocument(dom.window.document, dom.window.location.href)).toEqual({
+      source: "B&H",
       vendor: "B&H",
       title: "Demo Product",
       price: 295,
@@ -47,4 +48,3 @@ describe("B&H scraper", () => {
     );
   });
 });
-

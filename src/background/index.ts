@@ -28,6 +28,7 @@ async function handleSave(payload: SaveQuoteMessage["payload"]): Promise<SaveQuo
     spreadsheetId: payload.destination.spreadsheetId,
     sheetTabName: payload.destination.sheetTabName,
     mappingKeys: Object.keys(payload.destination.mapping || {}),
+    source: payload.item.source,
     title: payload.item.title,
     price: payload.item.price,
     quantity: payload.item.quantity,

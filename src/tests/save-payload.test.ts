@@ -9,6 +9,7 @@ describe("save payload builder", () => {
         spreadsheetId: "sheet-id",
         sheetTabName: "Quotes",
         mapping: {
+          source: { header: "Source", required: false },
           title: { header: "Title", required: true },
           price: { header: "Price", required: true },
           url: { header: "URL", required: true }
@@ -16,6 +17,7 @@ describe("save payload builder", () => {
         isDefault: true
       },
       product: {
+        source: "B&H",
         vendor: "B&H",
         title: "Sony Camera",
         price: 1999,
@@ -27,6 +29,7 @@ describe("save payload builder", () => {
 
     expect(payload.item.quantity).toBe(3);
     expect(payload.item.notes).toBe("Interview kit");
+    expect(payload.item.source).toBe("B&H");
     expect(payload.destination.mapping.title).toEqual({ header: "Title", required: true });
   });
 });

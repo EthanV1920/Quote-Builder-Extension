@@ -1,4 +1,4 @@
-import { isSupportedBhUrl } from "../shared/bh-scraper";
+import { isSupportedProductUrl } from "../shared/product-scraper";
 import { formatUsd } from "../shared/price";
 import { buildSaveQuoteRequest } from "../shared/save-payload";
 import { getConfig, hasReadyConfig } from "../shared/storage";
@@ -12,6 +12,7 @@ import type {
 const statusMessage = document.querySelector<HTMLParagraphElement>("#status-message");
 const configWarning = document.querySelector<HTMLParagraphElement>("#config-warning");
 const captureForm = document.querySelector<HTMLFormElement>("#capture-form");
+const captureSourceTitle = document.querySelector<HTMLHeadingElement>("#capture-source-title");
 const destinationSelect = document.querySelector<HTMLSelectElement>("#destination-select");
 const previewTitle = document.querySelector<HTMLParagraphElement>("#preview-title");
 const previewPrice = document.querySelector<HTMLParagraphElement>("#preview-price");
@@ -42,7 +43,7 @@ captureForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   if (!currentProduct) {
-    setStatus("Open a B&H product page to capture an item.", "error");
+    setStatus("Open a supported product page on B&H or Amazon.", "error");
     return;
   }
 
@@ -109,7 +110,7 @@ async function initializePopup(): Promise<void> {
   renderDestinations(destinations);
   toggleConfigWarning(!configReady);
 
-  if (!activeTab?.id || !activeTab.url || !isSupportedBhUrl(activeTab.url)) {
+  if (!activeTab?.id || !activeTab.url || !isSupportedProductUrl(activeTab.url)) {
     showUnsupportedState();
     return;
   }
@@ -124,6 +125,9 @@ async function initializePopup(): Promise<void> {
   }
 
   currentProduct = scrapeResponse.product;
+  if (captureSourceTitle) {
+    captureSourceTitle.textContent = `${scrapeResponse.product.source} Capture`;
+  }
   previewTitle!.textContent = scrapeResponse.product.title;
   previewPrice!.textContent = formatUsd(scrapeResponse.product.price);
   previewUrl!.textContent = scrapeResponse.product.url;
@@ -163,7 +167,10 @@ function renderDestinations(nextDestinations: DestinationConfig[]): void {
 
 function showUnsupportedState(): void {
   captureForm?.classList.add("hidden");
-  setStatus("Open a B&H product page to capture an item.", "error");
+  if (captureSourceTitle) {
+    captureSourceTitle.textContent = "Product Capture";
+  }
+  setStatus("Open a supported product page on B&H or Amazon.", "error");
 }
 
 function updateSaveButtonState(): void {
@@ -249,7 +256,7 @@ async function scrapeActiveProduct(tabId: number): Promise<ScrapeActiveProductRe
     if (!isRecoverableConnectionError(error)) {
       return {
         ok: false,
-        error: error instanceof Error ? error.message : "Unable to read this B&H page."
+        error: error instanceof Error ? error.message : "Unable to read this product page."
       };
     }
   }

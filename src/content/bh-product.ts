@@ -1,5 +1,6 @@
 type ScrapedProduct = {
-  vendor: "B&H";
+  source: "B&H" | "Amazon";
+  vendor: "B&H" | "Amazon";
   title: string;
   price: number;
   url: string;
@@ -19,8 +20,9 @@ type ScrapeActiveProductResponse =
       error: string;
     };
 
-const PRODUCT_PATH_RE = /^\/c\/product\//;
-const TITLE_BRANDING_RE = /\s*[-|]\s*B&H Photo(?: Video)?\s*$/i;
+const BH_PRODUCT_PATH_RE = /^\/c\/product\//;
+const AMAZON_PRODUCT_PATH_RE = /\/(?:gp\/product|dp)\//;
+const BH_TITLE_BRANDING_RE = /\s*[-|]\s*B&H Photo(?: Video)?\s*$/i;
 const DISPLAY_PRICE_RE = /\$\s*\d[\d,]*(?:\.\d{2})?/g;
 
 function scrapeBhProductDocument(document: Document, href: string): ScrapedProduct {
@@ -41,6 +43,7 @@ function scrapeBhProductDocument(document: Document, href: string): ScrapedProdu
   }
 
   return {
+    source: "B&H",
     vendor: "B&H",
     title,
     price,
@@ -53,7 +56,7 @@ function isSupportedBhUrl(href: string): boolean {
     const url = new URL(href);
     return (
       (url.hostname === "www.bhphotovideo.com" || url.hostname === "bhphotovideo.com") &&
-      PRODUCT_PATH_RE.test(url.pathname)
+      BH_PRODUCT_PATH_RE.test(url.pathname)
     );
   } catch {
     return false;
@@ -81,7 +84,7 @@ function extractTitle(document: Document): string {
       ?.trim() ||
     "";
 
-  return title.replace(TITLE_BRANDING_RE, "").trim();
+  return title.replace(BH_TITLE_BRANDING_RE, "").trim();
 }
 
 function extractPrice(document: Document): number | null {
@@ -119,6 +122,110 @@ function extractPrice(document: Document): number | null {
       if (price !== null) {
         return price;
       }
+    }
+  }
+
+  return null;
+}
+
+function scrapeAmazonProductDocument(document: Document, href: string): ScrapedProduct {
+  if (!isSupportedAmazonUrl(href)) {
+    throw new Error("Open an Amazon product page to capture an item.");
+  }
+
+  const url = extractCanonicalUrl(document, href);
+  const title = extractAmazonTitle(document);
+  const price = extractAmazonPrice(document);
+
+  if (!title) {
+    throw new Error("Could not find the product title on this Amazon page.");
+  }
+
+  if (price === null) {
+    throw new Error("Could not find a numeric product price on this Amazon page.");
+  }
+
+  return {
+    source: "Amazon",
+    vendor: "Amazon",
+    title,
+    price,
+    url
+  };
+}
+
+function isSupportedAmazonUrl(href: string): boolean {
+  try {
+    const url = new URL(href);
+    return (
+      (url.hostname === "www.amazon.com" || url.hostname === "amazon.com") &&
+      AMAZON_PRODUCT_PATH_RE.test(url.pathname)
+    );
+  } catch {
+    return false;
+  }
+}
+
+function extractAmazonTitle(document: Document): string {
+  return (
+    document.querySelector("#productTitle")?.textContent?.trim() ||
+    document
+      .querySelector<HTMLMetaElement>('meta[property="og:title"]')
+      ?.getAttribute("content")
+      ?.trim() ||
+    document.querySelector("h1")?.textContent?.trim() ||
+    ""
+  );
+}
+
+function extractAmazonPrice(document: Document): number | null {
+  const metaCandidates = [
+    document
+      .querySelector<HTMLMetaElement>('meta[property="product:price:amount"]')
+      ?.getAttribute("content"),
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:data1"]')?.getAttribute("content")
+  ];
+
+  for (const candidate of metaCandidates) {
+    const parsed = parsePriceValue(candidate);
+    if (parsed !== null) {
+      return parsed;
+    }
+  }
+
+  const selectorCandidates = [
+    "#corePrice_feature_div .a-price .a-offscreen",
+    "#corePriceDisplay_desktop_feature_div .a-price .a-offscreen",
+    "#corePrice_desktop .a-price .a-offscreen",
+    "#apex_desktop .a-price .a-offscreen",
+    "#price_inside_buybox",
+    "#priceblock_ourprice",
+    "#priceblock_dealprice",
+    "#priceblock_saleprice"
+  ];
+
+  for (const selector of selectorCandidates) {
+    const elements = Array.from(document.querySelectorAll<HTMLElement>(selector));
+    for (const element of elements) {
+      const parsed = parsePriceValue(element.textContent);
+      if (parsed !== null) {
+        return parsed;
+      }
+    }
+  }
+
+  const blockSelectors = [
+    "#corePrice_feature_div",
+    "#corePriceDisplay_desktop_feature_div",
+    "#apex_desktop",
+    "#ppd",
+    "#centerCol"
+  ];
+
+  for (const selector of blockSelectors) {
+    const price = extractBestPriceFromText(document.querySelector(selector)?.textContent ?? "");
+    if (price !== null) {
+      return price;
     }
   }
 
@@ -249,7 +356,7 @@ chrome.runtime.onMessage.addListener(
     }
 
     try {
-      const product = scrapeBhProductDocument(document, window.location.href);
+      const product = scrapeSupportedProductDocument(document, window.location.href);
       sendResponse({ ok: true, product });
     } catch (error) {
       sendResponse({
@@ -261,3 +368,15 @@ chrome.runtime.onMessage.addListener(
     return false;
   }
 );
+
+function scrapeSupportedProductDocument(document: Document, href: string): ScrapedProduct {
+  if (isSupportedBhUrl(href)) {
+    return scrapeBhProductDocument(document, href);
+  }
+
+  if (isSupportedAmazonUrl(href)) {
+    return scrapeAmazonProductDocument(document, href);
+  }
+
+  throw new Error("Open a supported product page on B&H or Amazon.");
+}

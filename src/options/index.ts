@@ -32,6 +32,7 @@ const destinationDefaultInput = document.querySelector<HTMLInputElement>("#desti
 const resetDestinationButton = document.querySelector<HTMLButtonElement>("#reset-destination");
 
 const mappingInputs = {
+  source: document.querySelector<HTMLInputElement>("#mapping-source"),
   title: document.querySelector<HTMLInputElement>("#mapping-title"),
   price: document.querySelector<HTMLInputElement>("#mapping-price"),
   url: document.querySelector<HTMLInputElement>("#mapping-url"),
@@ -42,6 +43,7 @@ const mappingInputs = {
 };
 
 const mappingRequiredInputs = {
+  source: document.querySelector<HTMLInputElement>("#required-source"),
   title: document.querySelector<HTMLInputElement>("#required-title"),
   price: document.querySelector<HTMLInputElement>("#required-price"),
   url: document.querySelector<HTMLInputElement>("#required-url"),

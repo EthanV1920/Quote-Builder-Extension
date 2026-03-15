@@ -34,6 +34,7 @@ export function scrapeBhProductDocument(document: Document, href: string): Scrap
   }
 
   return {
+    source: "B&H",
     vendor: "B&H",
     title,
     price,
@@ -164,4 +165,3 @@ function findPriceInJsonLd(value: unknown): number | null {
 
   return null;
 }
-

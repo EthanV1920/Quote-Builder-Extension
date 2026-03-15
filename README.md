@@ -1,11 +1,11 @@
 # Quote Builder Extension
 
-Chrome extension for capturing B&H product details and appending them to Google Sheets through a Google Apps Script web app.
+Chrome extension for capturing B&H and Amazon product details and appending them to Google Sheets through a Google Apps Script web app.
 
 ## Features
 
 - Manifest V3 Chrome extension
-- Popup-driven capture on B&H product detail pages
+- Popup-driven capture on B&H and Amazon product detail pages
 - Multiple spreadsheet destinations with one default destination
 - Configurable header-name mappings per destination
 - Quantity and notes fields before save
@@ -65,21 +65,20 @@ Notes:
    - destination label
    - spreadsheet URL or raw spreadsheet ID
    - tab name
-   - header names for `title`, `price`, and `url`
-   - optional header names for `vendor`, `timestamp`, `quantity`, and `notes`
+   - header names for any fields you want to save
+   - optional required/optional toggle per field
+   - available fields: `source`, `vendor`, `title`, `price`, `url`, `timestamp`, `quantity`, `notes`
 5. Mark one destination as default.
 
 ## Expected Sheet Headers
 
-The Apps Script appends rows by matching the configured header names in the first row of the target tab. Required mappings:
+The Apps Script appends rows by matching the configured header names in the first row of the target tab. Any mapped field can be marked required or optional. Available fields:
 
+- `source`
+- `vendor`
 - `title`
 - `price`
 - `url`
-
-Optional mappings:
-
-- `vendor`
 - `timestamp`
 - `quantity`
 - `notes`
@@ -88,7 +87,7 @@ Optional mappings:
 
 1. Build the extension and load `dist/` unpacked in Chrome.
 2. Configure Apps Script settings and at least one destination.
-3. Open a B&H product detail page.
+3. Open a B&H or Amazon product detail page.
 4. Open the popup and confirm title, price, and canonical URL preview.
 5. Save with quantity and notes.
 6. Confirm the row appears in the expected Google Sheet tab.
