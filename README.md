@@ -4,7 +4,7 @@ Chrome extension for capturing B&H and Amazon product details and appending them
 
 ## Demo
 
-![Quote Builder demo](./docs/quote_demo_1.gif)
+![Quote Builder demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGw2azd5ejE1aXNtZGNiM2R2Nnh1NTFsanVvYnNxeHNobm0wd3J5ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/q9ILnYJPPSLICVl5Hl/giphy.gif)
 
 ## Features
 

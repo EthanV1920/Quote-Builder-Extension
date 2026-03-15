@@ -2,4 +2,8 @@ node_modules/
 dist/
 .DS_Store
 coverage/
-
+*.gif
+*.mp4
+*.mov
+*.webm
+*.m4v
