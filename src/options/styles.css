@@ -1,0 +1,201 @@
+:root {
+  color-scheme: light;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: #1d1b18;
+  background:
+    radial-gradient(circle at top left, rgba(241, 154, 95, 0.14), transparent 28%),
+    linear-gradient(180deg, #f4efe9 0%, #ece6dc 100%);
+}
+
+body {
+  margin: 0;
+}
+
+.page-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 20px 64px;
+}
+
+.hero {
+  margin-bottom: 20px;
+}
+
+.hero h1,
+.section-heading h2 {
+  margin: 0;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #785436;
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.intro {
+  max-width: 720px;
+  line-height: 1.55;
+}
+
+.status-banner {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.status-banner[data-tone="success"] {
+  color: #1f6a45;
+}
+
+.status-banner[data-tone="error"] {
+  color: #8a2d16;
+}
+
+.hidden {
+  display: none;
+}
+
+.card {
+  margin-top: 18px;
+  padding: 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 18px 44px rgba(52, 31, 17, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.layout-split {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 960px) {
+  .layout-split {
+    grid-template-columns: 0.95fr 1.05fr;
+    align-items: start;
+  }
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.grid-form {
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span,
+.mapping-grid legend {
+  font-weight: 700;
+}
+
+.field input,
+.primary-button,
+.ghost-button {
+  border-radius: 12px;
+  border: 1px solid rgba(61, 45, 29, 0.16);
+  font: inherit;
+}
+
+.field input {
+  padding: 11px 12px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.checkbox-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.mapping-grid {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(61, 45, 29, 0.12);
+  border-radius: 18px;
+}
+
+@media (min-width: 700px) {
+  .mapping-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.destinations-list {
+  display: grid;
+  gap: 14px;
+}
+
+.destination-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #1f1814;
+  color: #f9f1eb;
+}
+
+.destination-card h3,
+.destination-card p {
+  margin: 0;
+}
+
+.destination-meta {
+  color: #dac4b4;
+  line-height: 1.4;
+}
+
+.default-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(234, 146, 84, 0.18);
+  color: #ffcb9c;
+  font-size: 0.8rem;
+}
+
+.button-row,
+.destination-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.primary-button,
+.ghost-button {
+  padding: 11px 14px;
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 0;
+  background: linear-gradient(135deg, #d45a1c, #ef9a58);
+  color: white;
+  font-weight: 700;
+}
+
+.ghost-button {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.empty-state {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(98, 73, 51, 0.08);
+  color: #604833;
+}

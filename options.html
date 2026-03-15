@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote Builder Options</title>
+    <link rel="stylesheet" href="/src/options/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <p class="eyebrow">Quote Builder</p>
+        <h1>Extension Settings</h1>
+        <p class="intro">
+          Configure the Apps Script endpoint and the Google Sheets destinations available in the popup.
+        </p>
+      </section>
+
+      <p id="status-banner" class="status-banner hidden"></p>
+
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Step 1</p>
+            <h2>Apps Script</h2>
+          </div>
+        </div>
+
+        <form id="global-form" class="grid-form">
+          <label class="field">
+            <span>Apps Script Web App URL</span>
+            <input id="apps-script-url" type="url" placeholder="https://script.google.com/..." required />
+          </label>
+
+          <label class="field">
+            <span>Shared secret</span>
+            <input id="shared-secret" type="password" placeholder="Set the same value in Apps Script" required />
+          </label>
+
+          <button class="primary-button" type="submit">Save Apps Script Settings</button>
+        </form>
+      </section>
+
+      <section class="card layout-split">
+        <div>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Step 2</p>
+              <h2>Destinations</h2>
+            </div>
+            <button id="new-destination" class="ghost-button" type="button">New Destination</button>
+          </div>
+
+          <div id="destinations-empty" class="empty-state">
+            No spreadsheet destinations yet. Add one to start saving quote rows.
+          </div>
+          <div id="destinations-list" class="destinations-list"></div>
+        </div>
+
+        <form id="destination-form" class="grid-form destination-form">
+          <input id="destination-id" type="hidden" />
+
+          <label class="field">
+            <span>Destination label</span>
+            <input id="destination-label" type="text" placeholder="Main quote sheet" required />
+          </label>
+
+          <label class="field">
+            <span>Spreadsheet URL or ID</span>
+            <input
+              id="spreadsheet-input"
+              type="text"
+              placeholder="https://docs.google.com/spreadsheets/d/... or raw spreadsheet ID"
+              required
+            />
+          </label>
+
+          <label class="field">
+            <span>Sheet tab name</span>
+            <input id="sheet-tab-name" type="text" placeholder="Quotes" required />
+          </label>
+
+          <label class="checkbox-field">
+            <input id="destination-default" type="checkbox" />
+            <span>Set as default destination</span>
+          </label>
+
+          <fieldset class="mapping-grid">
+            <legend>Column header names</legend>
+            <label class="field">
+              <span>Title</span>
+              <input id="mapping-title" type="text" placeholder="Item Title" required />
+            </label>
+            <label class="field">
+              <span>Price</span>
+              <input id="mapping-price" type="text" placeholder="Cost" required />
+            </label>
+            <label class="field">
+              <span>URL</span>
+              <input id="mapping-url" type="text" placeholder="Source URL" required />
+            </label>
+            <label class="field">
+              <span>Vendor</span>
+              <input id="mapping-vendor" type="text" placeholder="Vendor" />
+            </label>
+            <label class="field">
+              <span>Timestamp</span>
+              <input id="mapping-timestamp" type="text" placeholder="Captured At" />
+            </label>
+            <label class="field">
+              <span>Quantity</span>
+              <input id="mapping-quantity" type="text" placeholder="Qty" />
+            </label>
+            <label class="field">
+              <span>Notes</span>
+              <input id="mapping-notes" type="text" placeholder="Notes" />
+            </label>
+          </fieldset>
+
+          <div class="button-row">
+            <button class="primary-button" type="submit">Save Destination</button>
+            <button id="reset-destination" class="ghost-button" type="button">Clear Form</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="/src/options/index.ts"></script>
+  </body>
+</html>
+

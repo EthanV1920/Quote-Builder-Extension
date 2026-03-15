@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote Builder</title>
+    <link rel="stylesheet" href="/src/popup/styles.css" />
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="hero">
+        <p class="eyebrow">Quote Builder</p>
+        <h1>B&H Capture</h1>
+        <button id="open-options" class="ghost-button" type="button">Options</button>
+      </header>
+
+      <p id="status-message" class="status-message">Loading product data...</p>
+      <p id="config-warning" class="warning hidden">
+        Configure your Apps Script URL, shared secret, and at least one destination before saving.
+      </p>
+
+      <form id="capture-form" class="capture-form hidden">
+        <label class="field">
+          <span>Destination</span>
+          <select id="destination-select"></select>
+        </label>
+
+        <section class="preview-card">
+          <div class="preview-row">
+            <span class="label">Title</span>
+            <p id="preview-title" class="value"></p>
+          </div>
+          <div class="preview-row">
+            <span class="label">Price</span>
+            <p id="preview-price" class="value"></p>
+          </div>
+          <div class="preview-row">
+            <span class="label">URL</span>
+            <p id="preview-url" class="value value-url"></p>
+          </div>
+        </section>
+
+        <label class="field">
+          <span>Quantity</span>
+          <input id="quantity-input" type="number" min="1" step="1" value="1" required />
+        </label>
+
+        <label class="field">
+          <span>Notes</span>
+          <textarea id="notes-input" rows="4" maxlength="500" placeholder="Optional quote notes"></textarea>
+        </label>
+
+        <button id="save-button" class="primary-button" type="submit">Save to Google Sheets</button>
+      </form>
+    </main>
+
+    <script type="module" src="/src/popup/index.ts"></script>
+  </body>
+</html>
+

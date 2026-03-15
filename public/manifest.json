@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Quote Builder",
+  "version": "0.1.0",
+  "description": "Capture B&H product details and append them to Google Sheets.",
+  "permissions": ["storage", "tabs", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://www.bhphotovideo.com/*",
+    "https://bhphotovideo.com/*",
+    "https://script.google.com/*",
+    "https://script.googleusercontent.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Quote Builder"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.bhphotovideo.com/c/product/*",
+        "https://bhphotovideo.com/c/product/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
