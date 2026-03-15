@@ -2,6 +2,10 @@
 
 Chrome extension for capturing B&H and Amazon product details and appending them to Google Sheets through a Google Apps Script web app.
 
+## Demo
+
+![Quote Builder demo](./docs/quote_demo_1.gif)
+
 ## Features
 
 - Manifest V3 Chrome extension
