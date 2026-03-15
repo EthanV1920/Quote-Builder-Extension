@@ -1,7 +1,12 @@
-import type { AppConfig, DestinationConfig, FieldKey, HeaderMapping } from "./types";
+import type {
+  AppConfig,
+  DestinationConfig,
+  FieldKey,
+  FieldMapping,
+  HeaderMapping
+} from "./types";
 
 const STORAGE_KEY = "appConfig";
-const REQUIRED_MAPPING_FIELDS: FieldKey[] = ["title", "price", "url"];
 
 export const DEFAULT_CONFIG: AppConfig = {
   appsScriptUrl: "",
@@ -56,10 +61,41 @@ export function normalizeDestinations(destinations: DestinationConfig[]): Destin
 export function trimMapping(mapping: HeaderMapping = {}): HeaderMapping {
   return Object.fromEntries(
     Object.entries(mapping)
-      .filter(([, value]) => typeof value === "string")
-      .map(([key, value]) => [key, value.trim()])
-      .filter(([, value]) => Boolean(value))
+      .map(([key, value]) => {
+        const normalized = normalizeFieldMapping(key as FieldKey, value);
+        return normalized ? [key, normalized] : null;
+      })
+      .filter((entry): entry is [string, FieldMapping] => entry !== null)
   ) as HeaderMapping;
+}
+
+function normalizeFieldMapping(field: FieldKey, value: unknown): FieldMapping | null {
+  if (typeof value === "string") {
+    const header = value.trim();
+    if (!header) {
+      return null;
+    }
+
+    return {
+      header,
+      required: field === "title" || field === "price" || field === "url"
+    };
+  }
+
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const candidate = value as Partial<FieldMapping>;
+  const header = typeof candidate.header === "string" ? candidate.header.trim() : "";
+  if (!header) {
+    return null;
+  }
+
+  return {
+    header,
+    required: Boolean(candidate.required)
+  };
 }
 
 export function generateId(): string {
@@ -119,10 +155,9 @@ export function validateDestination(destination: DestinationConfig): string[] {
     errors.push("Sheet tab name is required.");
   }
 
-  for (const field of REQUIRED_MAPPING_FIELDS) {
-    if (!destination.mapping[field]?.trim()) {
-      errors.push(`${capitalize(field)} column header is required.`);
-    }
+  const mappedFields = Object.values(destination.mapping).filter((value) => value?.header.trim());
+  if (mappedFields.length === 0) {
+    errors.push("Add at least one mapped column header.");
   }
 
   return errors;
@@ -152,8 +187,19 @@ export function hasReadyConfig(config: AppConfig): boolean {
   );
 }
 
-function capitalize(value: string): string {
-  return value.charAt(0).toUpperCase() + value.slice(1);
+export function getActiveHeaderMapping(mapping: HeaderMapping): HeaderMapping {
+  return Object.fromEntries(
+    Object.entries(mapping).filter(([, value]) => value && value.header.trim())
+  ) as HeaderMapping;
+}
+
+export function formatMappingLabel(field: FieldKey, mapping: HeaderMapping): string | null {
+  const config = mapping[field];
+  if (!config?.header) {
+    return null;
+  }
+
+  return config.required ? `${field} (required)` : field;
 }
 
 function storageGet<T>(key: string): Promise<T | undefined> {
@@ -181,4 +227,3 @@ function storageSet<T>(key: string, value: T): Promise<void> {
     });
   });
 }
-

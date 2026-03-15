@@ -126,12 +126,8 @@ function validatePayload(payload) {
 
   if (!payload.destination.mapping || typeof payload.destination.mapping !== "object") {
     errors.push("Destination mapping is required.");
-  } else {
-    ["title", "price", "url"].forEach(function (field) {
-      if (!payload.destination.mapping[field]) {
-        errors.push(field.charAt(0).toUpperCase() + field.slice(1) + " mapping is required.");
-      }
-    });
+  } else if (Object.keys(payload.destination.mapping).length === 0) {
+    errors.push("At least one mapped field is required.");
   }
 
   if (!payload.item || typeof payload.item !== "object") {
@@ -183,8 +179,10 @@ function buildHeaderMap(headers) {
 function validateMappedHeaders(mapping, headerMap) {
   var missing = [];
   Object.keys(mapping || {}).forEach(function (field) {
-    var headerName = String(mapping[field]).trim();
-    if (headerName && headerMap[headerName] === undefined) {
+    var mappingConfig = mapping[field];
+    var headerName = mappingConfig && mappingConfig.header ? String(mappingConfig.header).trim() : "";
+    var isRequired = Boolean(mappingConfig && mappingConfig.required);
+    if (isRequired && headerName && headerMap[headerName] === undefined) {
       missing.push("Header not found: " + headerName);
     }
   });
@@ -193,7 +191,8 @@ function validateMappedHeaders(mapping, headerMap) {
 
 function populateRowValues(rowValues, headerMap, mapping, item) {
   Object.keys(mapping || {}).forEach(function (field) {
-    var headerName = String(mapping[field]).trim();
+    var mappingConfig = mapping[field];
+    var headerName = mappingConfig && mappingConfig.header ? String(mappingConfig.header).trim() : "";
     if (!headerName) {
       return;
     }
@@ -263,6 +262,14 @@ function summarizePayload(payload) {
     mappingKeys:
       payload && payload.destination && payload.destination.mapping
         ? Object.keys(payload.destination.mapping)
+        : [],
+    requiredMappingKeys:
+      payload && payload.destination && payload.destination.mapping
+        ? Object.keys(payload.destination.mapping).filter(function (field) {
+            return Boolean(
+              payload.destination.mapping[field] && payload.destination.mapping[field].required
+            );
+          })
         : [],
     title: payload && payload.item ? payload.item.title : "",
     price: payload && payload.item ? payload.item.price : "",

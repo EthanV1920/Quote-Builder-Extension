@@ -10,7 +10,12 @@ export const FIELD_KEYS = [
 
 export type FieldKey = (typeof FIELD_KEYS)[number];
 
-export type HeaderMapping = Partial<Record<FieldKey, string>>;
+export type FieldMapping = {
+  header: string;
+  required: boolean;
+};
+
+export type HeaderMapping = Partial<Record<FieldKey, FieldMapping>>;
 
 export type DestinationConfig = {
   id: string;
@@ -80,4 +85,3 @@ export type SaveQuoteMessage = {
   type: "SAVE_QUOTE";
   payload: SaveQuoteRequest;
 };
-

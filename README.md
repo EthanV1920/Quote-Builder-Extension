@@ -40,6 +40,10 @@ The built extension will be in `dist/`.
 3. Click Load unpacked.
 4. Select the `dist/` folder from this repo.
 
+## Keyboard Shortcut
+
+The extension defines a default shortcut of `Alt+Shift+Q` to open the popup. You can change it in `chrome://extensions/shortcuts`.
+
 ## Configure Apps Script
 
 1. Create a standalone Google Apps Script project.

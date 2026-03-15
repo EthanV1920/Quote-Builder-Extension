@@ -29,6 +29,15 @@ openOptionsButton?.addEventListener("click", () => {
   chrome.runtime.openOptionsPage();
 });
 
+notesInput?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" || event.shiftKey) {
+    return;
+  }
+
+  event.preventDefault();
+  captureForm?.requestSubmit();
+});
+
 captureForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -73,6 +82,7 @@ captureForm?.addEventListener("submit", async (event) => {
     if (response.ok) {
       const rowText = response.rowNumber ? ` Row ${response.rowNumber}.` : "";
       setStatus(`Saved to ${destination.label}.${rowText}`, "success");
+      window.setTimeout(() => window.close(), 250);
     } else {
       setStatus(formatSaveError(response), "error");
     }
@@ -126,6 +136,7 @@ async function initializePopup(): Promise<void> {
     "info"
   );
   updateSaveButtonState();
+  focusQuantityInput();
 }
 
 function renderDestinations(nextDestinations: DestinationConfig[]): void {
@@ -172,6 +183,17 @@ function setSaving(isSaving: boolean): void {
 
 function toggleConfigWarning(show: boolean): void {
   configWarning?.classList.toggle("hidden", !show);
+}
+
+function focusQuantityInput(): void {
+  if (!quantityInput) {
+    return;
+  }
+
+  requestAnimationFrame(() => {
+    quantityInput.focus();
+    quantityInput.select();
+  });
 }
 
 function setStatus(message: string, tone: "info" | "error" | "success"): void {

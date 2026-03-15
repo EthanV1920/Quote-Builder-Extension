@@ -5,6 +5,7 @@ import {
   type HeaderMapping
 } from "../shared/types";
 import {
+  formatMappingLabel,
   generateId,
   getConfig,
   normalizeConfig,
@@ -40,6 +41,16 @@ const mappingInputs = {
   notes: document.querySelector<HTMLInputElement>("#mapping-notes")
 };
 
+const mappingRequiredInputs = {
+  title: document.querySelector<HTMLInputElement>("#required-title"),
+  price: document.querySelector<HTMLInputElement>("#required-price"),
+  url: document.querySelector<HTMLInputElement>("#required-url"),
+  vendor: document.querySelector<HTMLInputElement>("#required-vendor"),
+  timestamp: document.querySelector<HTMLInputElement>("#required-timestamp"),
+  quantity: document.querySelector<HTMLInputElement>("#required-quantity"),
+  notes: document.querySelector<HTMLInputElement>("#required-notes")
+};
+
 let config: AppConfig = {
   appsScriptUrl: "",
   sharedSecret: "",
@@ -71,6 +82,12 @@ globalForm?.addEventListener("submit", async (event) => {
 
 destinationForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  const mappingErrors = validateMappingForm();
+  if (mappingErrors.length) {
+    showStatus(mappingErrors[0], "error");
+    return;
+  }
 
   const spreadsheetId = parseSpreadsheetId(spreadsheetInput?.value ?? "");
   if (!spreadsheetId) {
@@ -233,8 +250,12 @@ function loadDestinationIntoForm(destination: DestinationConfig): void {
 
   for (const field of FIELD_KEYS) {
     const input = mappingInputs[field];
+    const requiredInput = mappingRequiredInputs[field];
     if (input) {
-      input.value = destination.mapping[field] ?? "";
+      input.value = destination.mapping[field]?.header ?? "";
+    }
+    if (requiredInput) {
+      requiredInput.checked = Boolean(destination.mapping[field]?.required);
     }
   }
 
@@ -250,6 +271,13 @@ function resetDestinationForm(): void {
   if (config.destinations.length === 0 && destinationDefaultInput) {
     destinationDefaultInput.checked = true;
   }
+
+  for (const field of FIELD_KEYS) {
+    const requiredInput = mappingRequiredInputs[field];
+    if (requiredInput) {
+      requiredInput.checked = field === "title" || field === "price" || field === "url";
+    }
+  }
 }
 
 function readMappingFromForm(): HeaderMapping {
@@ -258,7 +286,10 @@ function readMappingFromForm(): HeaderMapping {
   for (const field of FIELD_KEYS) {
     const value = mappingInputs[field]?.value.trim();
     if (value) {
-      mapping[field] = value;
+      mapping[field] = {
+        header: value,
+        required: Boolean(mappingRequiredInputs[field]?.checked)
+      };
     }
   }
 
@@ -266,7 +297,24 @@ function readMappingFromForm(): HeaderMapping {
 }
 
 function formatMappings(mapping: HeaderMapping): string {
-  return FIELD_KEYS.filter((field) => mapping[field]).join(", ");
+  return FIELD_KEYS.map((field) => formatMappingLabel(field, mapping))
+    .filter((value): value is string => Boolean(value))
+    .join(", ");
+}
+
+function validateMappingForm(): string[] {
+  const errors: string[] = [];
+
+  for (const field of FIELD_KEYS) {
+    const isRequired = Boolean(mappingRequiredInputs[field]?.checked);
+    const header = mappingInputs[field]?.value.trim() ?? "";
+
+    if (isRequired && !header) {
+      errors.push(`${capitalize(field)} header is required when the field is marked required.`);
+    }
+  }
+
+  return errors;
 }
 
 async function persistConfig(successMessage: string): Promise<void> {
@@ -285,4 +333,8 @@ function showStatus(message: string, tone: "success" | "error"): void {
   statusBanner.textContent = message;
   statusBanner.dataset.tone = tone;
   statusBanner.classList.remove("hidden");
+}
+
+function capitalize(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }

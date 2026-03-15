@@ -20,7 +20,11 @@ describe("storage helpers", () => {
         label: "One",
         spreadsheetId: "sheet-1",
         sheetTabName: "Quotes",
-        mapping: { title: "Title", price: "Price", url: "URL" },
+        mapping: {
+          title: { header: "Title", required: true },
+          price: { header: "Price", required: true },
+          url: { header: "URL", required: true }
+        },
         isDefault: false
       },
       {
@@ -28,7 +32,11 @@ describe("storage helpers", () => {
         label: "Two",
         spreadsheetId: "sheet-2",
         sheetTabName: "Quotes",
-        mapping: { title: "Title", price: "Price", url: "URL" },
+        mapping: {
+          title: { header: "Title", required: true },
+          price: { header: "Price", required: true },
+          url: { header: "URL", required: true }
+        },
         isDefault: false
       }
     ]);
@@ -37,17 +45,35 @@ describe("storage helpers", () => {
     expect(destinations[0].isDefault).toBe(true);
   });
 
-  it("requires the standard title, price, and URL mappings", () => {
+  it("requires at least one mapped column", () => {
     expect(
       validateDestination({
         id: "dest",
         label: "Quotes",
         spreadsheetId: "sheet-id",
         sheetTabName: "Quotes",
-        mapping: { title: "Title" },
+        mapping: {},
         isDefault: true
       })
-    ).toContain("Price column header is required.");
+    ).toContain("Add at least one mapped column header.");
+  });
+
+  it("migrates legacy string mappings to field mapping objects", () => {
+    const [destination] = normalizeDestinations([
+      {
+        id: "legacy",
+        label: "Legacy",
+        spreadsheetId: "sheet-id",
+        sheetTabName: "Quotes",
+        mapping: {
+          title: "Title",
+          timestamp: "Time"
+        },
+        isDefault: true
+      } as never
+    ]);
+
+    expect(destination.mapping.title).toEqual({ header: "Title", required: true });
+    expect(destination.mapping.timestamp).toEqual({ header: "Time", required: false });
   });
 });
-

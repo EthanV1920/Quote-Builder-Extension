@@ -87,34 +87,76 @@
 
           <fieldset class="mapping-grid">
             <legend>Column header names</legend>
-            <label class="field">
-              <span>Title</span>
-              <input id="mapping-title" type="text" placeholder="Item Title" required />
-            </label>
-            <label class="field">
-              <span>Price</span>
-              <input id="mapping-price" type="text" placeholder="Cost" required />
-            </label>
-            <label class="field">
-              <span>URL</span>
-              <input id="mapping-url" type="text" placeholder="Source URL" required />
-            </label>
-            <label class="field">
-              <span>Vendor</span>
-              <input id="mapping-vendor" type="text" placeholder="Vendor" />
-            </label>
-            <label class="field">
-              <span>Timestamp</span>
-              <input id="mapping-timestamp" type="text" placeholder="Captured At" />
-            </label>
-            <label class="field">
-              <span>Quantity</span>
-              <input id="mapping-quantity" type="text" placeholder="Qty" />
-            </label>
-            <label class="field">
-              <span>Notes</span>
-              <input id="mapping-notes" type="text" placeholder="Notes" />
-            </label>
+            <div class="mapping-row">
+              <label class="field">
+                <span>Title</span>
+                <input id="mapping-title" type="text" placeholder="Item Title" />
+              </label>
+              <label class="checkbox-field">
+                <input id="required-title" type="checkbox" checked />
+                <span>Required</span>
+              </label>
+            </div>
+            <div class="mapping-row">
+              <label class="field">
+                <span>Price</span>
+                <input id="mapping-price" type="text" placeholder="Cost" />
+              </label>
+              <label class="checkbox-field">
+                <input id="required-price" type="checkbox" checked />
+                <span>Required</span>
+              </label>
+            </div>
+            <div class="mapping-row">
+              <label class="field">
+                <span>URL</span>
+                <input id="mapping-url" type="text" placeholder="Source URL" />
+              </label>
+              <label class="checkbox-field">
+                <input id="required-url" type="checkbox" checked />
+                <span>Required</span>
+              </label>
+            </div>
+            <div class="mapping-row">
+              <label class="field">
+                <span>Vendor</span>
+                <input id="mapping-vendor" type="text" placeholder="Vendor" />
+              </label>
+              <label class="checkbox-field">
+                <input id="required-vendor" type="checkbox" />
+                <span>Required</span>
+              </label>
+            </div>
+            <div class="mapping-row">
+              <label class="field">
+                <span>Timestamp</span>
+                <input id="mapping-timestamp" type="text" placeholder="Captured At" />
+              </label>
+              <label class="checkbox-field">
+                <input id="required-timestamp" type="checkbox" />
+                <span>Required</span>
+              </label>
+            </div>
+            <div class="mapping-row">
+              <label class="field">
+                <span>Quantity</span>
+                <input id="mapping-quantity" type="text" placeholder="Qty" />
+              </label>
+              <label class="checkbox-field">
+                <input id="required-quantity" type="checkbox" />
+                <span>Required</span>
+              </label>
+            </div>
+            <div class="mapping-row">
+              <label class="field">
+                <span>Notes</span>
+                <input id="mapping-notes" type="text" placeholder="Notes" />
+              </label>
+              <label class="checkbox-field">
+                <input id="required-notes" type="checkbox" />
+                <span>Required</span>
+              </label>
+            </div>
           </fieldset>
 
           <div class="button-row">
@@ -128,4 +170,3 @@
     <script type="module" src="/src/options/index.ts"></script>
   </body>
 </html>
-

@@ -130,6 +130,18 @@ body {
   border-radius: 18px;
 }
 
+.mapping-row {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(95, 74, 55, 0.05);
+}
+
+.mapping-row .checkbox-field {
+  font-size: 0.92rem;
+}
+
 @media (min-width: 700px) {
   .mapping-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

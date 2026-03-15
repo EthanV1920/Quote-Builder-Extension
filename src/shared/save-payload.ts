@@ -1,4 +1,5 @@
 import type { DestinationConfig, SaveQuoteRequest, ScrapedProduct } from "./types";
+import { getActiveHeaderMapping } from "./storage";
 
 export function buildSaveQuoteRequest(args: {
   destination: DestinationConfig;
@@ -10,7 +11,7 @@ export function buildSaveQuoteRequest(args: {
     destination: {
       spreadsheetId: args.destination.spreadsheetId,
       sheetTabName: args.destination.sheetTabName,
-      mapping: args.destination.mapping
+      mapping: getActiveHeaderMapping(args.destination.mapping)
     },
     item: {
       vendor: args.product.vendor,
@@ -23,4 +24,3 @@ export function buildSaveQuoteRequest(args: {
     }
   };
 }
-

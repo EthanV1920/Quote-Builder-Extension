@@ -9,9 +9,9 @@ describe("save payload builder", () => {
         spreadsheetId: "sheet-id",
         sheetTabName: "Quotes",
         mapping: {
-          title: "Title",
-          price: "Price",
-          url: "URL"
+          title: { header: "Title", required: true },
+          price: { header: "Price", required: true },
+          url: { header: "URL", required: true }
         },
         isDefault: true
       },
@@ -27,7 +27,6 @@ describe("save payload builder", () => {
 
     expect(payload.item.quantity).toBe(3);
     expect(payload.item.notes).toBe("Interview kit");
-    expect(payload.destination.mapping.title).toBe("Title");
+    expect(payload.destination.mapping.title).toEqual({ header: "Title", required: true });
   });
 });
-
